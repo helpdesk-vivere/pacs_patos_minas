@@ -2,389 +2,169 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Treinamento Philips</title>
+<title>Dashboard Executivo - Prefeitura Patos de Minas</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-body{
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin:0;
-    padding:30px;
-    background:#f1f4f8;
-    color:#2c3e50;
-}
-
-/* Título principal */
-h1{
-    background:linear-gradient(135deg,#0f5c74,#1f6f8b);
-    color:#fff;
-    padding:18px;
-    border-radius:12px;
-    text-align:center;
-    box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    letter-spacing:1px;
-}
-
-/* Card Dashboard */
-.dashboard{
-    margin-top:25px;
-    padding:20px;
-    border-radius:12px;
-    background:#ffffff;
-    box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    font-size:15px;
-}
-
-/* Barra progresso */
-.progress-bar{
-    height:22px;
-    background:#e0e6ed;
-    border-radius:20px;
-    overflow:hidden;
-    margin-top:10px;
-}
-
-.progress-fill{
-    height:100%;
-    width:0%;
-    background:linear-gradient(90deg,#00c853,#28a745);
-    transition:width 0.4s ease;
-}
-
-/* Informações adicionais */
-.subinfo{
-    margin:25px 0;
-    padding:15px 20px;
-    background:#ffffff;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
-    font-size:14px;
-}
-
-/* Tabela */
-table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:14px;
-    background:#ffffff;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 6px 18px rgba(0,0,0,0.08);
-}
-
-th{
-    background:#1f6f8b;
-    color:#fff;
-    padding:12px;
-    text-transform:uppercase;
-    font-size:12px;
-    letter-spacing:0.5px;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #ecf0f1;
-}
-
-tr:nth-child(even){
-    background:#f8fafc;
-}
-
-tr:hover{
-    background:#eef6fb;
-    transition:0.2s;
-}
-
-td[]:focus{
-    outline:2px solid #1f6f8b;
-    background:#f0fbff;
-}
-
-/* Centralizar colunas 2 a 6 */
-#tabela td:nth-child(n+2),
-#tabela th:nth-child(n+2){
-    text-align:center;
-}
-
-/* Botões */
-button{
-    padding:10px 18px;
-    background:linear-gradient(135deg,#007bff,#0056b3);
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    margin-right:8px;
-    font-weight:500;
-    box-shadow:0 3px 8px rgba(0,0,0,0.15);
-    transition:all 0.2s ease;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    opacity:0.95;
-}
-
-/* Progresso colorido */
-.progresso-baixo{
-  background:#ff4d4f;
-  color:white;
-  font-weight:bold;
-  border-radius:6px;
-}
-
-.progresso-medio{
-  background:#ffb300;
-  color:#1a1a1a;
-  font-weight:bold;
-  border-radius:6px;
-}
-
-
-
-.progresso-alto{
-  background:#00c853;
-  color:white;
-  font-weight:bold;
-  border-radius:6px;
-}
-.descricao-aplicacao{
-    background:#ffe0b2;
-    font-weight:600;
-}
-.descricao-pacs-admin{
-    background:#d1ecf1;   /* azul claro compatível com sua página */
-    color:#0f5c74;
-    font-weight:600;
-}
-.descricao-go-live{
-    background:#00c853;   /* verde forte */
-    color:white;
-    font-weight:700;
-    border-radius:6px;
-}
-
-
-}</style>
+body, html{margin:0;padding:0;font-family:'Segoe UI', Arial, sans-serif;background:#f1f4f9;color:#333;}
+.header{background:linear-gradient(135deg,#0f5c74,#1f6f8b);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+.header img{ width:120px; margin-bottom:10px; }
+.header h1{ margin:0; font-size:22px; letter-spacing:1px; }
+.header span{ font-size:14px; opacity:0.9; }
+.container{ padding:25px; max-width:1300px; margin:auto; }
+.kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-bottom:30px; }
+.card{ background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.08); transition:0.3s; text-align:center; }
+.card:hover{ transform:translateY(-4px); }
+.card h3{ margin:0; font-size:14px; color:#777; }
+.card .numero{ font-size:28px; font-weight:bold; margin-top:8px; }
+.verde{color:#28a745;} .azul{color:#007bff;} .amarelo{color:#f0ad4e;} .vermelho{color:#dc3545;}
+.table-container{ background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.08); margin-bottom:30px; overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; font-size:13px; }
+th{ text-align:left; padding:10px; background:#1f6f8b; color:#fff; }
+td{ padding:8px; border-bottom:1px solid #eee; }
+tr:hover{ background:#f9fbfd; }
+.badge{ padding:4px 10px; border-radius:20px; color:#fff; font-size:12px; font-weight:bold; }
+.badge.verde{background:#28a745;}
+.badge.azul{background:#007bff;}
+.badge.amarelo{background:#ffc107;color:#000;}
+.badge.vermelho{background:#dc3545;}
+.progress-bar{ height:12px; background:#e1e5ea; border-radius:6px; overflow:hidden; margin-top:10px; }
+.progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,#28a745,#20c997); transition:width 0.6s ease; }
+.chart-card{ background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.08); margin-bottom:30px; }
+</style>
 </head>
-
 <body>
 
-<h1 >PREFEITURA - PATOS DE MINAS</h1>
-
-<div class="dashboard">
-<strong>Progresso Total: </strong><span id="media"></span><br>
-Total: <span id="total"></span><br>
-<div class="progress-bar">
-<div class="progress-fill" id="barra"></div>
-</div>
-</div>
-<div class="subinfo">
-<strong >Vivere Consultoria</strong><br><br>
-Responsável: <span >André Soares</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Data de Início do Projeto: <span >13/02/2026</span>
+<div class="header">
+    <img src="logo.jpg" alt="Logo Vivere Consultoria">
+    <h1>PREFEITURA - PATOS DE MINAS</h1>
+    <span>Vivere Consultoria | André Soares | Início: 13/02/2026</span>
 </div>
 
+<div class="container">
+    <div class="kpis">
+        <div class="card"><h3>Total de Atividades</h3><div class="numero" id="total">0</div></div>
+        <div class="card"><h3>Progresso</h3><div class="numero azul" id="media">0%</div><div class="progress-bar"><div class="progress-fill" id="barra"></div></div></div>
+        <div class="card"><h3>Concluídas</h3><div class="numero verde" id="concluidas">0</div></div>
+        <div class="card"><h3>Atrasadas</h3><div class="numero vermelho" id="atrasadas">0</div></div>
+    </div>
 
-<table id="tabela">
-<thead>
-<tr>
-<th>Descrição</th>
-<th>Categoria</th>
-<th>Atribuído a</th>
-<th>Progresso (%)</th>
-<th>Início</th>
-<th>Dias</th>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Atribuído a</th>
+                    <th>Progresso (%)</th>
+                    <th>Início</th>
+                    <th>Dias</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
 
-
-
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-
-
-
+    <div class="chart-card">
+        <canvas id="grafico" height="100"></canvas>
+    </div>
+</div>
 
 <script>
-
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwzgzyb-4OQQiJ48-hn8cRXKjHpFulwBoqQAjuMOzFudErASSijXVC_XeepnkN5C6oY/exec";
-
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwSd6NMPlZXWF9aJdmnEaQtH9fYoIbMFM8xRd6Z9hMe1TEoJTh7OV87-CDxbi-WktlTfQ/exec";
 let chart;
 
-function adicionarLinha(dados){
-    let tr = document.createElement("tr");
-
-    tr.innerHTML = `
-        <td>${dados.descricao || ""}</td>
-        <td>${dados.categoria || ""}</td>
-        <td>${dados.atribuido || ""}</td>
-        <td>${dados.progresso || 0}</td>
-        <td>${formatarData(dados.inicio)}</td>
-        <td>${dados.dias || ""}</td>
-    `;
-
-    // 🔵 Verifica conteúdo REAL da célula Início
-    let textoInicio = tr.cells[4].innerText.trim();
-
-
-
-    document.querySelector("#tabela tbody").appendChild(tr);
-}
-function novaLinha(){
-    adicionarLinha();
+function parseData(data){
+    if(!data) return new Date();
+    let d = new Date(data);
+    if(!isNaN(d)) return d;
+    let p = data.split("/");
+    return new Date(p[2], p[1]-1, p[0]);
 }
 
-function formatarData(dataISO){
-
-    if(!dataISO) return "";
-
-    let data = new Date(dataISO);
-
-    if(isNaN(data)) return dataISO;
-
-    return data.toLocaleDateString("pt-BR");
-}
-
-function calcular(){
-    let linhas = document.querySelectorAll("#tabela tbody tr");
-    let total = linhas.length;
-    let soma = 0;
-
-    linhas.forEach(l=>{
-let celulaDescricao = l.cells[0];
-
-// remove classes antes de reaplicar
-celulaDescricao.classList.remove("descricao-aplicacao","descricao-pacs-admin");
-
-// 🔹 APLICAÇÃO CLINICA
-if(
-    celulaDescricao.innerText.trim().toUpperCase() === 
-    "SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA"
-){
-    celulaDescricao.classList.add("descricao-aplicacao");
-}
-
-// 🔹 GO-LIVE
-if(
-    celulaDescricao.innerText
-    .trim()
-    .toUpperCase() === 
-    "INICIO AMBIENTE GO-LIVE (PRODUÇÃO)"
-){
-    celulaDescricao.classList.add("descricao-go-live");
-}
-
-// 🔹 PACS ADMIN
-if(
-    celulaDescricao.innerText.trim().toUpperCase() === 
-    "SERVIÇOS DE APLICAÇÃO - PACS ADMIN"
-){
-    celulaDescricao.classList.add("descricao-pacs-admin");
-}     if(!l.cells[3]) return;
-
-        let celulaProgresso = l.cells[3];
-        let celulaInicio = l.cells[4];
-        let celulaDias = l.cells[5];
-
-        let prog = parseFloat(celulaProgresso.innerText) || 0;
-
-        if(prog <= 1){
-            prog = prog * 100;
-        }
-
-        prog = Math.max(0, Math.min(100, prog));
-        celulaProgresso.innerText = prog;
-
-        soma += prog;
-
-        // 🔎 Cálculo de prazo
-        let inicioTexto = celulaInicio.innerText;
-        let dias = parseInt(celulaDias.innerText) || 0;
-
-        let partes = inicioTexto.split("/");
-        if(partes.length === 3){
-            let dataInicio = new Date(partes[2], partes[1]-1, partes[0]);
-            let hoje = new Date();
-
-            let dataFim = new Date(dataInicio);
-            dataFim.setDate(dataFim.getDate() + dias);
-
-            let totalPrazo = dataFim - dataInicio;
-            let decorrido = hoje - dataInicio;
-
-            let percentualTempo = (decorrido / totalPrazo) * 100;
-
-            // Remove classes antigas
-            celulaProgresso.classList.remove("progresso-baixo","progresso-medio","progresso-alto");
-
-// Remove classes antigas
-celulaProgresso.classList.remove("progresso-baixo","progresso-medio","progresso-alto");
-
-// 🔹 REGRA ESPECIAL: progresso 0 e ainda dentro do prazo → não pintar
-if(prog === 0 && percentualTempo <= 100){
-    return;
-}
-
-if(prog >= 100){
-    celulaProgresso.classList.add("progresso-alto");
-}
-else if(percentualTempo > prog + 10){
-    celulaProgresso.classList.add("progresso-baixo"); // atrasado
-}
-else if(Math.abs(percentualTempo - prog) <= 10){
-    celulaProgresso.classList.add("progresso-medio"); // atenção
-}
-else{
-    celulaProgresso.classList.add("progresso-alto"); // adiantado
-}
-        }
-    });
-
-    let media = total ? Math.round(soma/total) : 0;
-
-    document.getElementById("total").innerText = total;
-    document.getElementById("media").innerText = media+"%";
-    document.getElementById("barra").style.width = media+"%";
-}async function salvar(){
-    let linhas=document.querySelectorAll("#tabela tbody tr");
-    let dados=[];
-    linhas.forEach(l=>{
-        dados.push({
-            descricao:l.cells[0].innerText,
-            progresso:l.cells[1].innerText,
-            observacao:l.cells[2].innerText
-        });
-    });
-    await fetch(URL_SCRIPT,{
-        method:"POST",
-        body:JSON.stringify(dados)
-    });
-    alert("Salvo no Google Drive ✅");
+function formatarDataBR(data){
+    if(!data) return "";
+    let d = new Date(data);
+    if(isNaN(d)) return data;
+    let dia = ("0"+d.getDate()).slice(-2);
+    let mes = ("0"+(d.getMonth()+1)).slice(-2);
+    let ano = d.getFullYear();
+    return `${dia}/${mes}/${ano}`;
 }
 
 async function carregar(){
-    let resposta=await fetch(URL_SCRIPT);
-    let dados=await resposta.json();
-    document.querySelector("#tabela tbody").innerHTML="";
-    dados.forEach(d=>{
-        adicionarLinha(d);
+    let res = await fetch(URL_SCRIPT);
+    let dados = await res.json();
+    let tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    let total=0, soma=0, concl=0, atras=0, emDia=0;
+    let hoje = new Date();
+    const especiais = ["SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA","SERVIÇOS DE APLICAÇÃO - PACS ADMIN"];
+
+    dados.forEach(d => {
+        let prog = parseFloat(d.progresso)||0;
+        if(prog <= 1) prog *= 100;
+        prog = Math.min(100, prog);
+
+        let inicio = parseData(d.inicio);
+        let final = new Date(inicio);
+        final.setDate(final.getDate() + parseInt(d.dias||0));
+        let diff = Math.ceil((final-hoje)/(1000*60*60*24));
+
+        let desc = d.descricao.trim().toUpperCase();
+        let linhaEspecialIgnorar = especiais.includes(desc);
+
+        let status="", classe="";
+        if(!linhaEspecialIgnorar || desc==="INICIO AMBIENTE GO-LIVE (PRODUÇÃO)"){ // agora essa linha é contabilizada
+            total++;
+            soma += prog;
+            if(prog===100){ status="Concluído"; classe="verde"; concl++; }
+            else if(diff<0){ status="Atrasado"; classe="vermelho"; atras++; }
+            else{ status="Em dia"; classe="azul"; emDia++; }
+        }
+
+        let tr = document.createElement("tr");
+        if(desc==="INICIO AMBIENTE GO-LIVE (PRODUÇÃO)") tr.style.backgroundColor="#28a74530";
+        if(desc==="SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA") tr.style.backgroundColor="#007bff30";
+        if(desc==="SERVIÇOS DE APLICAÇÃO - PACS ADMIN") tr.style.backgroundColor="#17a2b830";
+        tr.style.color="#0f3e21";
+
+        tr.innerHTML = `
+            <td>${d.descricao}</td>
+            <td>${d.categoria}</td>
+            <td>${d.atribuido}</td>
+            <td>${prog}%</td>
+            <td>${formatarDataBR(d.inicio)}</td>
+            <td>${d.dias}</td>
+            <td>${status?`<span class="badge ${classe}">${status}</span>`:""}</td>
+        `;
+        tbody.appendChild(tr);
     });
-    calcular();
-}
-function atualizarAutomatico(){
-    setInterval(() => {
-        carregar(); // busca dados novamente
-        console.log("Atualizado automaticamente");
-    }, 10000); // 10.000 ms = 10 segundos
+
+    let media = total?Math.round(soma/total):0;
+    document.getElementById("total").innerText = total;
+    document.getElementById("media").innerText = media+"%";
+    document.getElementById("concluidas").innerText = concl;
+    document.getElementById("atrasadas").innerText = atras;
+    document.getElementById("barra").style.width = media+"%";
+
+    if(chart) chart.destroy();
+    chart = new Chart(document.getElementById("grafico"),{
+        type:"doughnut",
+        data:{
+            labels:["Concluído","Em Dia","Atrasado"],
+            datasets:[{
+                data:[concl, emDia, atras],
+                backgroundColor:["#28a745","#007bff","#dc3545"]
+            }]
+        },
+        options:{ plugins:{legend:{position:"bottom"}}, cutout:"60%" }
+    });
 }
 
-document.addEventListener("input",calcular);
-window.onload = function(){
-    carregar();
-    atualizarAutomatico();
-};
+carregar();
+setInterval(carregar,30000);
 </script>
 
 </body>
