@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Treinamento Philips</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin:0;
+    padding:30px;
+    background:#f1f4f8;
+    color:#2c3e50;
+}
+
+/* Título principal */
+h1{
+    background:linear-gradient(135deg,#0f5c74,#1f6f8b);
+    color:#fff;
+    padding:18px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    letter-spacing:1px;
+}
+
+/* Card Dashboard */
+.dashboard{
+    margin-top:25px;
+    padding:20px;
+    border-radius:12px;
+    background:#ffffff;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    font-size:15px;
+}
+
+/* Barra progresso */
+.progress-bar{
+    height:22px;
+    background:#e0e6ed;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#00c853,#28a745);
+    transition:width 0.4s ease;
+}
+
+/* Informações adicionais */
+.subinfo{
+    margin:25px 0;
+    padding:15px 20px;
+    background:#ffffff;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    font-size:14px;
+}
+
+/* Tabela */
+table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    background:#ffffff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+th{
+    background:#1f6f8b;
+    color:#fff;
+    padding:12px;
+    text-transform:uppercase;
+    font-size:12px;
+    letter-spacing:0.5px;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ecf0f1;
+}
+
+tr:nth-child(even){
+    background:#f8fafc;
+}
+
+tr:hover{
+    background:#eef6fb;
+    transition:0.2s;
+}
+
+td[]:focus{
+    outline:2px solid #1f6f8b;
+    background:#f0fbff;
+}
+
+/* Centralizar colunas 2 a 6 */
+#tabela td:nth-child(n+2),
+#tabela th:nth-child(n+2){
+    text-align:center;
+}
+
+/* Botões */
+button{
+    padding:10px 18px;
+    background:linear-gradient(135deg,#007bff,#0056b3);
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-right:8px;
+    font-weight:500;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    transition:all 0.2s ease;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    opacity:0.95;
+}
+
+/* Progresso colorido */
+.progresso-baixo{
+  background:#ff4d4f;
+  color:white;
+  font-weight:bold;
+  border-radius:6px;
+}
+
+.progresso-medio{
+  background:#ffb300;
+  color:#1a1a1a;
+  font-weight:bold;
+  border-radius:6px;
+}
+
+
+
+.progresso-alto{
+  background:#00c853;
+  color:white;
+  font-weight:bold;
+  border-radius:6px;
+}
+.descricao-aplicacao{
+    background:#ffe0b2;
+    font-weight:600;
+}
+.descricao-pacs-admin{
+    background:#d1ecf1;   /* azul claro compatível com sua página */
+    color:#0f5c74;
+    font-weight:600;
+}
+.descricao-go-live{
+    background:#00c853;   /* verde forte */
+    color:white;
+    font-weight:700;
+    border-radius:6px;
+}
+
+
+}</style>
+</head>
+
+<body>
+
+<h1 >PREFEITURA - PATOS DE MINAS</h1>
+
+<div class="dashboard">
+<strong>Progresso Total: </strong><span id="media"></span><br>
+Total: <span id="total"></span><br>
+<div class="progress-bar">
+<div class="progress-fill" id="barra"></div>
+</div>
+</div>
+<div class="subinfo">
+<strong >Vivere Consultoria</strong><br><br>
+Responsável: <span >André Soares</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Data de Início do Projeto: <span >13/02/2026</span>
+</div>
+
+
+<table id="tabela">
+<thead>
+<tr>
+<th>Descrição</th>
+<th>Categoria</th>
+<th>Atribuído a</th>
+<th>Progresso (%)</th>
+<th>Início</th>
+<th>Dias</th>
+
+
+
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+
+
+
+
+<script>
+
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwzgzyb-4OQQiJ48-hn8cRXKjHpFulwBoqQAjuMOzFudErASSijXVC_XeepnkN5C6oY/exec";
+
+let chart;
+
+function adicionarLinha(dados){
+    let tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td>${dados.descricao || ""}</td>
+        <td>${dados.categoria || ""}</td>
+        <td>${dados.atribuido || ""}</td>
+        <td>${dados.progresso || 0}</td>
+        <td>${formatarData(dados.inicio)}</td>
+        <td>${dados.dias || ""}</td>
+    `;
+
+    // 🔵 Verifica conteúdo REAL da célula Início
+    let textoInicio = tr.cells[4].innerText.trim();
+
+
+
+    document.querySelector("#tabela tbody").appendChild(tr);
+}
+function novaLinha(){
+    adicionarLinha();
+}
+
+function formatarData(dataISO){
+
+    if(!dataISO) return "";
+
+    let data = new Date(dataISO);
+
+    if(isNaN(data)) return dataISO;
+
+    return data.toLocaleDateString("pt-BR");
+}
+
+function calcular(){
+    let linhas = document.querySelectorAll("#tabela tbody tr");
+    let total = linhas.length;
+    let soma = 0;
+
+    linhas.forEach(l=>{
+let celulaDescricao = l.cells[0];
+
+// remove classes antes de reaplicar
+celulaDescricao.classList.remove("descricao-aplicacao","descricao-pacs-admin");
+
+// 🔹 APLICAÇÃO CLINICA
+if(
+    celulaDescricao.innerText.trim().toUpperCase() === 
+    "SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA"
+){
+    celulaDescricao.classList.add("descricao-aplicacao");
+}
+
+// 🔹 GO-LIVE
+if(
+    celulaDescricao.innerText
+    .trim()
+    .toUpperCase() === 
+    "INICIO AMBIENTE GO-LIVE (PRODUÇÃO)"
+){
+    celulaDescricao.classList.add("descricao-go-live");
+}
+
+// 🔹 PACS ADMIN
+if(
+    celulaDescricao.innerText.trim().toUpperCase() === 
+    "SERVIÇOS DE APLICAÇÃO - PACS ADMIN"
+){
+    celulaDescricao.classList.add("descricao-pacs-admin");
+}     if(!l.cells[3]) return;
+
+        let celulaProgresso = l.cells[3];
+        let celulaInicio = l.cells[4];
+        let celulaDias = l.cells[5];
+
+        let prog = parseFloat(celulaProgresso.innerText) || 0;
+
+        if(prog <= 1){
+            prog = prog * 100;
+        }
+
+        prog = Math.max(0, Math.min(100, prog));
+        celulaProgresso.innerText = prog;
+
+        soma += prog;
+
+        // 🔎 Cálculo de prazo
+        let inicioTexto = celulaInicio.innerText;
+        let dias = parseInt(celulaDias.innerText) || 0;
+
+        let partes = inicioTexto.split("/");
+        if(partes.length === 3){
+            let dataInicio = new Date(partes[2], partes[1]-1, partes[0]);
+            let hoje = new Date();
+
+            let dataFim = new Date(dataInicio);
+            dataFim.setDate(dataFim.getDate() + dias);
+
+            let totalPrazo = dataFim - dataInicio;
+            let decorrido = hoje - dataInicio;
+
+            let percentualTempo = (decorrido / totalPrazo) * 100;
+
+            // Remove classes antigas
+            celulaProgresso.classList.remove("progresso-baixo","progresso-medio","progresso-alto");
+
+// Remove classes antigas
+celulaProgresso.classList.remove("progresso-baixo","progresso-medio","progresso-alto");
+
+// 🔹 REGRA ESPECIAL: progresso 0 e ainda dentro do prazo → não pintar
+if(prog === 0 && percentualTempo <= 100){
+    return;
+}
+
+if(prog >= 100){
+    celulaProgresso.classList.add("progresso-alto");
+}
+else if(percentualTempo > prog + 10){
+    celulaProgresso.classList.add("progresso-baixo"); // atrasado
+}
+else if(Math.abs(percentualTempo - prog) <= 10){
+    celulaProgresso.classList.add("progresso-medio"); // atenção
+}
+else{
+    celulaProgresso.classList.add("progresso-alto"); // adiantado
+}
+        }
+    });
+
+    let media = total ? Math.round(soma/total) : 0;
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("media").innerText = media+"%";
+    document.getElementById("barra").style.width = media+"%";
+}async function salvar(){
+    let linhas=document.querySelectorAll("#tabela tbody tr");
+    let dados=[];
+    linhas.forEach(l=>{
+        dados.push({
+            descricao:l.cells[0].innerText,
+            progresso:l.cells[1].innerText,
+            observacao:l.cells[2].innerText
+        });
+    });
+    await fetch(URL_SCRIPT,{
+        method:"POST",
+        body:JSON.stringify(dados)
+    });
+    alert("Salvo no Google Drive ✅");
+}
+
+async function carregar(){
+    let resposta=await fetch(URL_SCRIPT);
+    let dados=await resposta.json();
+    document.querySelector("#tabela tbody").innerHTML="";
+    dados.forEach(d=>{
+        adicionarLinha(d);
+    });
+    calcular();
+}
+function atualizarAutomatico(){
+    setInterval(() => {
+        carregar(); // busca dados novamente
+        console.log("Atualizado automaticamente");
+    }, 10000); // 10.000 ms = 10 segundos
+}
+
+document.addEventListener("input",calcular);
+window.onload = function(){
+    carregar();
+    atualizarAutomatico();
+};
+</script>
+
+</body>
+</html>
