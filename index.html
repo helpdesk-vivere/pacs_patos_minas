@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Executivo - Prefeitura Patos de Minas</title>
+<title>Dashboard - Prefeitura Patos de Minas</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body, html{margin:0;padding:0;font-family:'Segoe UI', Arial, sans-serif;background:#f1f4f9;color:#333;}
@@ -30,6 +30,19 @@ tr:hover{ background:#f9fbfd; }
 .progress-bar{ height:12px; background:#e1e5ea; border-radius:6px; overflow:hidden; margin-top:10px; }
 .progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,#28a745,#20c997); transition:width 0.6s ease; }
 .chart-card{ background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.08); margin-bottom:30px; }
+.progress{
+height:10px;
+background:#e5e5e5;
+border-radius:5px;
+overflow:hidden;
+margin-top:5px;
+}
+
+.bar{
+height:100%;
+background:#28a745;
+width:0%;
+}
 </style>
 </head>
 <body>
@@ -43,7 +56,7 @@ tr:hover{ background:#f9fbfd; }
 <div class="container">
     <div class="kpis">
         <div class="card"><h3>Total de Atividades</h3><div class="numero" id="total">0</div></div>
-        <div class="card"><h3>Progresso</h3><div class="numero azul" id="media">0%</div><div class="progress-bar"><div class="progress-fill" id="barra"></div></div></div>
+        <div class="card"><h3>Progresso Total</h3><div class="numero azul" id="media">0%</div><div class="progress-bar"><div class="progress-fill" id="barra"></div></div></div>
         <div class="card"><h3>Concluídas</h3><div class="numero verde" id="concluidas">0</div></div>
         <div class="card"><h3>Atrasadas</h3><div class="numero vermelho" id="atrasadas">0</div></div>
     </div>
@@ -134,8 +147,12 @@ async function carregar(){
             <td>${d.descricao}</td>
             <td>${d.categoria}</td>
             <td>${d.atribuido}</td>
-            <td>${prog}%</td>
-            <td>${formatarDataBR(d.inicio)}</td>
+<td>
+${prog}%
+<div class="progress">
+<div class="bar" style="width:${prog}%"></div>
+</div>
+</td>            <td>${formatarDataBR(d.inicio)}</td>
             <td>${d.dias}</td>
             <td>${status?`<span class="badge ${classe}">${status}</span>`:""}</td>
         `;
