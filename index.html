@@ -147,39 +147,56 @@ function formatarDataBR(data){
 }
 
 async function carregar(){
-    let res = await fetch(URL_SCRIPT);
-    let dados = await res.json();
+    try{
+        let res = await fetch(URL_SCRIPT);
+        let dados = await res.json();
 
-    let tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
+        let tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
 
-    document.getElementById("total").innerText = dados.length;
+        let total = 0;
 
-    dados.forEach(d => {
-        let tr = document.createElement("tr");
+        dados.forEach(d => {
 
-        const desc = (d.descricao || "").toUpperCase();
+            const descOriginal = d.descricao || "";
+            const desc = descOriginal.toUpperCase();
 
-        // 🎨 Destaque por tipo
-        if(desc.includes("SERVIÇOS DE APLICAÇÃO - PACS ADMIN") ||
-           desc.includes("SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA")){
-            tr.style.backgroundColor = "#007bff30"; // azul claro
-        }
+            // 🚫 NÃO contabilizar estes
+            const ignorar =
+                desc.includes("SERVIÇOS DE APLICAÇÃO - PACS ADMIN") ||
+                desc.includes("SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA");
 
-        if(desc.includes("INICIO AMBIENTE GO-LIVE")){
-            tr.style.backgroundColor = "#28a74530"; // verde claro
-        }
+            // ✅ Contabiliza apenas os demais
+            if(!ignorar) total++;
 
-        tr.innerHTML = `
-            <td>${d.descricao}</td>
-            <td>${d.categoria}</td>
-            <td>${d.atribuido}</td>
-            <td>${formatarDataBR(d.inicio)}</td>
-            <td>${d.dias}</td>
-        `;
+            let tr = document.createElement("tr");
 
-        tbody.appendChild(tr);
-    });
+            // 🎨 Destaques visuais
+            if(desc.includes("SERVIÇOS DE APLICAÇÃO - PACS ADMIN") ||
+               desc.includes("SERVIÇOS DE APLICAÇÃO - APLICAÇÃO CLINICA")){
+                tr.style.backgroundColor = "#007bff30";
+            }
+
+            if(desc.includes("INICIO AMBIENTE GO-LIVE")){
+                tr.style.backgroundColor = "#28a74530";
+            }
+
+            tr.innerHTML = `
+                <td>${descOriginal}</td>
+                <td>${d.categoria || ""}</td>
+                <td>${d.atribuido || ""}</td>
+                <td>${formatarDataBR(d.inicio)}</td>
+                <td>${d.dias || ""}</td>
+            `;
+
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("total").innerText = total;
+
+    }catch(e){
+        console.error("Erro ao carregar dados:", e);
+    }
 }
 
 carregar();
